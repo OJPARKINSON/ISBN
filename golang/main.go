@@ -2,16 +2,15 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
 )
 
 func main() {
-	startingISBN := "0-306-40615-2"
+	startingISBN := "123456789XX"
 
-	result := TestISBN(startingISBN)
+	result := ValidateISBN(startingISBN)
 
 	if result {
 		fmt.Println("success")
@@ -20,39 +19,44 @@ func main() {
 	}
 }
 
-func TestISBN(startingISBN string) bool {
-	match, err := regexp.MatchString(`\d-?\d{1,7}-?\d{1,5}-?(\d|X)`, startingISBN)
+func ValidateISBN(startingISBN string) bool {
+	match, err := regexp.MatchString(`((\d-)|\d{1,10})\d{1,10}?-\d{0,5}?-(\d{1}|X)|(\d{1,10}(X|\d{1}))$`, startingISBN)
 	if err != nil || !match {
-		log.Fatal("Failed to parse")
+		fmt.Println(err)
+		return false
 	}
 
-	split := strings.Split(startingISBN, "")
+	splitISBN := strings.Split(startingISBN, "")
 
 	count := 0
 	countIndex := 0
-	for i := 0; i < len(split); i++ {
-		if i == len(split)-1 {
+	for i := 0; i < len(splitISBN); i++ {
+		if i == len(splitISBN)-1 {
 			continue
-		} else if split[i] == "-" {
+		} else if splitISBN[i] == "-" {
 			continue
 		} else {
-			checkNum, _ := strconv.Atoi(split[i])
+			num, _ := strconv.Atoi(splitISBN[i])
 
-			count += checkNum * (countIndex + 1)
+			count += num * (countIndex + 1)
 			countIndex++
 		}
+
+		fmt.Println("count: ", count)
 	}
 
-	checkSum := count % 11
+	numForCheck := count % 11
+	fmt.Println(numForCheck)
 
-	lastDigit := 0
-	lastIndex := split[len(split)-1]
+	checkSum := 0
+	lastIndex := splitISBN[len(splitISBN)-1]
 	if lastIndex == "X" {
-		lastDigit = 10
+		checkSum = 10
 	} else {
-		lastDigit, _ = strconv.Atoi(lastIndex)
+		checkSum, _ = strconv.Atoi(lastIndex)
 
 	}
+	fmt.Println(checkSum)
 
-	return checkSum == lastDigit
+	return checkSum == numForCheck
 }
