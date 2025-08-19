@@ -1,0 +1,74 @@
+# ISBN Checker
+
+This project is a simple coding test to implement an **ISBN-10 checker**.  
+An ISBN-10 is a 10-digit number used to uniquely identify books. The last digit (the **checksum**) can be a number between `0–9` or the letter `X` (representing the value **10**).  
+
+The goal of this test is to **validate ISBN-10 numbers** by calculating the checksum from the first 9 digits and checking it against the provided checksum.
+
+---
+
+## 📖 ISBN-10 Checksum Rules
+
+1. An ISBN-10 consists of **10 characters**:
+   - The first 9 are digits (`0–9`).
+   - The last one can be a digit or `X` (which equals `10`).
+2. To calculate the checksum:
+   - Multiply each of the first 9 digits by its **position** (counting from 1).
+   - Sum these products.
+   - Take the result modulo 11.
+   - If the result is `10`, the checksum is `X`, otherwise it’s the number itself.
+3. A valid ISBN-10 is one where the calculated checksum matches the 10th character.
+
+---
+
+## ✅ Example
+
+For ISBN: **0-306-40615-2**
+
+1. Remove hyphens: `0306406152`  
+2. Multiply and sum:  
+   ```
+   (0×1) + (3×2) + (0×3) + (6×4) + (4×5) + (0×6) + (6×7) + (1×8) + (5×9)  
+   = 0 + 6 + 0 + 24 + 20 + 0 + 42 + 8 + 45 = 145
+   ```
+3. Compute modulo 11:  
+   ```
+   145 % 11 = 2
+   ```
+4. The checksum is `2`, which matches the last digit.  
+   ✅ **Valid ISBN**
+
+---
+
+## 🚀 Your Task
+
+1. Implement a function/method to check if an ISBN-10 is valid.  
+2. Your code should:
+   - Handle both digits and `X` as the checksum.  
+   - Ignore hyphens (`-`).  
+   - Return whether the ISBN is **valid** or **invalid**.  
+
+---
+
+## 🧪 Suggested Tests
+
+| ISBN         | Valid? |
+|--------------|--------|
+| `0-306-40615-2` | ✅ Yes |
+| `0-321-14653-0` | ✅ Yes |
+| `0-9752298-0-X` | ✅ Yes |
+| `123456789X`    | ✅ Yes |
+| `1234567890`    | ❌ No |
+| `1111111111`    | ❌ No |
+
+---
+
+## 📝 Notes
+
+- Assume input is always a string.  
+- No external libraries should be used.  
+- Write clean, testable code.  
+
+---
+
+👉 This test is meant to evaluate **problem-solving ability, code quality, and correctness**.  
