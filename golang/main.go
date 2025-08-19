@@ -2,59 +2,57 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-func validateISBN(splitStr []string) {
-	dashes := 0
-	for i := 0; i < len(splitStr); i++ {
-		if splitStr[i] == "-" {
-			if splitStr[i+1] == "-" {
-				panic("Invalid ISBN: consecutive dashes")
-			}
-			dashes++
-		}
-	}
+func main() {
+	startingISBN := "0-306-40615-2"
 
-	if dashes > 2 {
-		panic("Invalid ISBN: too many dashes")
+	result := TestISBN(startingISBN)
+
+	if result {
+		fmt.Println("success")
+	} else {
+		fmt.Println("error")
 	}
 }
 
-func countISBN(ISBN string) int {
-	splitStr := strings.Split(ISBN, "")
+func TestISBN(startingISBN string) bool {
+	match, err := regexp.MatchString(`\d-?\d{1,7}-?\d{1,5}-?(\d|X)`, startingISBN)
+	if err != nil || !match {
+		log.Fatal("Failed to parse")
+	}
 
-	validateISBN(splitStr)
+	split := strings.Split(startingISBN, "")
 
 	count := 0
-	descSeq := 10
-	for i := 0; i < len(splitStr); i++ {
-		if splitStr[i] == "-" {
-			splitStr = append(splitStr[:i], splitStr[i+1:]...)
-			i -= 1
+	countIndex := 0
+	for i := 0; i < len(split); i++ {
+		if i == len(split)-1 {
+			continue
+		} else if split[i] == "-" {
 			continue
 		} else {
-			num, err := strconv.Atoi(splitStr[i])
-			if err != nil {
-				panic("Failed to parse str")
-			}
-			count += num * descSeq
-			descSeq--
+			checkNum, _ := strconv.Atoi(split[i])
+
+			count += checkNum * (countIndex + 1)
+			countIndex++
 		}
 	}
 
-	return count
+	checkSum := count % 11
 
-}
+	lastDigit := 0
+	lastIndex := split[len(split)-1]
+	if lastIndex == "X" {
+		lastDigit = 10
+	} else {
+		lastDigit, _ = strconv.Atoi(lastIndex)
 
-func main() {
-	ISBN := "0-596-52068"
+	}
 
-	count := countISBN(ISBN)
-
-	remainder := count % 11
-
-	fmt.Println(11 - remainder)
-
+	return checkSum == lastDigit
 }
