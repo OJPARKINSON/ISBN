@@ -7,7 +7,7 @@ import (
 )
 
 func ValidateISBN(input string) bool {
-	match, _ := regexp.MatchString(`^[0-9Xx\s-.:]+$`, input)
+	match, _ := regexp.MatchString(`(ISBN-1[03]: )?[0-9Xx\s-.:]+`, input)
 	if !match {
 		return false
 	}
@@ -16,11 +16,12 @@ func ValidateISBN(input string) bool {
 
 	isbnFormat := detectFormat(normalisedISBN)
 
-	if isbnFormat == "invalid" {
+	switch isbnFormat {
+	case "invalid":
 		return false
-	} else if isbnFormat == "ISBN-10" {
+	case "ISBN-10":
 		return ValidateISBN10(normalisedISBN)
-	} else {
+	default:
 		return ValidateISBN13(normalisedISBN)
 	}
 }
