@@ -20,6 +20,7 @@ func main() {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
+	
 	records, err := reader.ReadAll()
 	if err != nil {
 		log.Panic("Failed to read the csv file")
