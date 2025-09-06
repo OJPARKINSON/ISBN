@@ -52,14 +52,15 @@ func ValidateISBN13(isbn13 string) bool {
 	for i := 0; i < 12; i++ {
 		digit, _ := strconv.Atoi(string(isbn13[i]))
 		if i%2 == 0 {
-			sum += digit * 1
-		} else {
 			sum += digit * 3
+		} else {
+			sum += digit * 1
 		}
 	}
 
 	checksum := (10 - (sum % 10)) % 10
 	lastDigit, _ := strconv.Atoi(string(isbn13[12]))
+
 	return checksum == lastDigit
 }
 
