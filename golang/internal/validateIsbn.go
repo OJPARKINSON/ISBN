@@ -63,9 +63,11 @@ func ValidateISBN13(isbn13 string) bool {
 }
 
 func normaliseISBN(input string) string {
-	re := regexp.MustCompile(`^ISBN-1[03]:\s*`)
+	// removes prefix ISBN-10: or ISBN-13
+	re := regexp.MustCompile(`ISBN-1[03]:\s*`)
 	cleaned := re.ReplaceAllString(input, "")
 
+	// removes dashes
 	re = regexp.MustCompile(`[\s\-\.]`)
 	cleaned = re.ReplaceAllString(cleaned, "")
 
