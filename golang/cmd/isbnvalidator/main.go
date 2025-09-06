@@ -20,7 +20,7 @@ func main() {
 	defer file.Close()
 
 	reader := csv.NewReader(file)
-	
+
 	records, err := reader.ReadAll()
 	if err != nil {
 		log.Panic("Failed to read the csv file")
@@ -33,15 +33,15 @@ func main() {
 
 		result := internal.ValidateISBN(record[0])
 
-		boolValue, err := strconv.ParseBool(record[1])
+		expectedResult, err := strconv.ParseBool(record[1])
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("failed to parse expected value: ", err)
 		}
 
-		if result == boolValue {
+		if result == expectedResult {
 			fmt.Println(record[0], " - success")
 		} else {
-			fmt.Println(record[0], " - error: result: ", result, " expected: ", record[1])
+			fmt.Println(record[0], " - error: result: ", result, " expected: ", expectedResult)
 		}
 	}
 
